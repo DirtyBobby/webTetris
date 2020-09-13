@@ -24,7 +24,7 @@ let field = [];
 
 let tetramino;
 
-let gameScore;
+let gameScore = 0;
 
 function placeTetramino(_x, _y)
 {
@@ -704,6 +704,13 @@ function isCollision(_direction)
     }
 }
 
+function showScore()
+{
+    context.fillStyle = "white";
+    context.font = "48px sans-serif";
+    context.fillText("Score: " + gameScore, 450, 100, 300);
+}
+
 //Рисует кадр
 function drawFrame()
 {
@@ -763,6 +770,8 @@ function drawFrame()
             context.strokeRect(field[i][j].x, field[i][j].y, 40, 40);
         }
     }
+
+    showScore();
 }
 
 function update()
@@ -833,13 +842,33 @@ function tetraminoLanded()
         field[tetramino.figure[i].x][tetramino.figure[i].y].isFallingBlock = false;
     }
     
+    let _layersDeletedInARow = 0;
+
     //проверяем на то, заполнен ли слой из блоков, чтобы если что его убрать и добавить очки
     for (let i = 0; i < 4; i++)
     {
         if (checkLayer(tetramino.figure[i].y))
         {
             deleteLayer(tetramino.figure[i].y)
+            _layersDeletedInARow++;
         }
+    }
+
+    switch (_layersDeletedInARow) {
+        case 1:
+            gameScore += 100;
+            break;
+        case 2:
+            gameScore += 300;
+            break;
+        case 3:
+            gameScore += 700;
+            break;
+        case 4:
+            gameScore += 1500;
+            break;
+        default:
+            break;
     }
 
     spawnTetramino();
@@ -969,7 +998,4 @@ function getKeyDown(e){
 background.src = "Sprites/background.png";
 
 background.addEventListener("load", start);
-//background.addEventListener("load", awake);
 document.addEventListener("keydown", getKeyDown);
-
-//Пусть после прогрузки заднего фона нарисуется кадр
