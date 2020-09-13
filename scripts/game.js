@@ -185,29 +185,10 @@ function placeTetramino(_x, _y)
                 }
                 tetramino.figure[3] = {
                     x : _x - 1,
-                    y : _y - 1,
+                    y : _y + 1,
                 }
             }
             else if (rotation % 4 == 2)
-            {
-                tetramino.figure[0] = {
-                    x : _x,
-                    y : _y,
-                }
-                tetramino.figure[1] = {
-                    x : _x - 1,
-                    y : _y,
-                }
-                tetramino.figure[2] = {
-                    x : _x + 1,
-                    y : _y,
-                }
-                tetramino.figure[3] = {
-                    x : _x + 1,
-                    y : _y - 1,
-                }
-            }
-            else if (rotation % 4 == 3)
             {
                 tetramino.figure[0] = {
                     x : _x,
@@ -223,6 +204,25 @@ function placeTetramino(_x, _y)
                 }
                 tetramino.figure[3] = {
                     x : _x - 1,
+                    y : _y - 1,
+                }
+            }
+            else if (rotation % 4 == 3)
+            {
+                tetramino.figure[0] = {
+                    x : _x,
+                    y : _y,
+                }
+                tetramino.figure[1] = {
+                    x : _x - 1,
+                    y : _y,
+                }
+                tetramino.figure[2] = {
+                    x : _x + 1,
+                    y : _y,
+                }
+                tetramino.figure[3] = {
+                    x : _x + 1,
                     y : _y - 1,
                 }
             }
@@ -253,7 +253,7 @@ function placeTetramino(_x, _y)
                     y : _y,
                 }
                 tetramino.figure[1] = {
-                    x : _x + 1,
+                    x : _x - 1,
                     y : _y,
                 }
                 tetramino.figure[2] = {
@@ -261,7 +261,7 @@ function placeTetramino(_x, _y)
                     y : _y - 1,
                 }
                 tetramino.figure[3] = {
-                    x : _x - 1,
+                    x : _x + 1,
                     y : _y - 1,
                 }
             }
@@ -726,7 +726,8 @@ function drawFrame()
             const cell = field[i][j];
             switch (cell.type) {
                 case TileType.empty:
-                    context.strokeRect(field[i][j].x, field[i][j].y, 40, 40);
+                    //context.strokeRect(field[i][j].x, field[i][j].y, 40, 40);
+                    
                     break;
                 case TileType.blockI:
                     context.fillStyle = "cyan";
@@ -757,6 +758,7 @@ function drawFrame()
                     context.fillRect(field[i][j].x, field[i][j].y, 40, 40);
                     break;
             }
+            context.strokeRect(field[i][j].x, field[i][j].y, 40, 40);
         }
     }
 }
@@ -909,10 +911,10 @@ function moveFallingBlock(_direction)
 
         drawFrame();
     }
-    //else if (_direction == 0)
-    //{
-    //    tetraminoLanded();
-    //}
+    else if (_direction == 0)
+    {
+        tetraminoLanded();
+    }
 }
 
 /**
