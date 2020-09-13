@@ -24,6 +24,8 @@ let field = [];
 
 let tetramino;
 
+let gameScore;
+
 function placeTetramino(_x, _y)
 {
     let rotation = tetramino.rotation;
@@ -782,24 +784,26 @@ function start()
 
 function checkLayer(_y)
 {
-    let _isFilled = false;
-
-    for (let i = 0; i < 20; i++)
+    if (_y <= 19)
     {
-        if (field[i][_y].type == empty)
-        {
-            return false;
-        }
+            for (let i = 0; i < 10; i++)
+            {
+                if (field[i][_y].type == TileType.empty)
+                {
+                    return false;
+                }
+            }
+            return true;
     }
-    return true;
+    else return false;
 }
 
 function deleteLayer(_y)
 {
     //Очищаем слой
-    for (let i = 0; i < 20; i++)
+    for (let i = 0; i < 10; i++)
     {
-        field[i][_y].type = empty;
+        field[i][_y].type = TileType.empty;
         field[i][_y].isFallingBlock = false;
     }
 
@@ -809,24 +813,35 @@ function deleteLayer(_y)
         for (let i = 0; i < 10; i++)
         {
             field[i][j + 1].type = field[i][j].type;
-            field[i][j].type = empty;
+            field[i][j].type = TileType.empty;
         }
     }
 }
 
 function tetraminoLanded()
 {
+    //делаем блоки статичными и проверяем на конец игры
+    for (let i = 0; i < 4; i++)
+    {
+        if (tetramino.figure[i].y < 0)
+        {
+            drawFrame();
+            alert("Game Over");
+            start();
+        }
+
+        field[tetramino.figure[i].x][tetramino.figure[i].y].isFallingBlock = false;
+    }
+    
     //проверяем на то, заполнен ли слой из блоков, чтобы если что его убрать и добавить очки
     for (let i = 0; i < 4; i++)
     {
-        field[tetramino.figure[i].x][tetramino.figure[i].y].isFallingBlock = false;
-        /* BUG
         if (checkLayer(tetramino.figure[i].y))
         {
             deleteLayer(tetramino.figure[i].y)
         }
-        */
     }
+
     spawnTetramino();
 }
 
@@ -851,23 +866,23 @@ function gravity()
 
 function rotateFallingBlock()
 {
-    //LEGACY
     tetramino.rotation++;
     placeTetramino(tetramino.figure[0].x, tetramino.figure[0].y);
-    
-    drawFrame();
 
-    //без drawFrame(); новое
-    /*
     let _isRotationAvailable = true;
 
     for (let i = 0; i < 4; i++)
     {
-        if (tetramino.figure[i].x < 0 || tetramino.figure[i].y < 0 || field[tetramino.figure[i].x][tetramino.figure[i].y].type != empty)
+        if (tetramino.figure[i].x < 0 || tetramino.figure[i].x > 9 || tetramino.figure[i].y < 0 || tetramino.figure[i].y > 19)
         {
             _isRotationAvailable = false;
+            break;
         }
-        break;
+        else if (field[tetramino.figure[i].x][tetramino.figure[i].y].type != TileType.empty && field[tetramino.figure[i].x][tetramino.figure[i].y].isFallingBlock == false)
+        {
+            _isRotationAvailable = false;
+            break;
+        }
     }
 
     if (_isRotationAvailable)
@@ -881,7 +896,6 @@ function rotateFallingBlock()
 
         drawFrame();
     }
-    */
 }
 
 function moveFallingBlock(_direction)
@@ -921,7 +935,7 @@ function moveFallingBlock(_direction)
  * 
  * @param {KeyboardEvent} e 
  */
-function getKey(e){
+function getKeyDown(e){
     switch (e.code) {
         case 'KeyW':
             rotateFallingBlock();
@@ -956,6 +970,6 @@ background.src = "Sprites/background.png";
 
 background.addEventListener("load", start);
 //background.addEventListener("load", awake);
-document.addEventListener("keydown", getKey);
+document.addEventListener("keydown", getKeyDown);
 
 //Пусть после прогрузки заднего фона нарисуется кадр
