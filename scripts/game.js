@@ -103,7 +103,7 @@ function placeTetramino(_x, _y)
                 }
                 tetramino.figure[2] = {
                     x : _x + 1,
-                    y : _y - 1,
+                    y : _y,
                 }
                 tetramino.figure[3] = {
                     x : _x + 1,
@@ -399,7 +399,7 @@ function placeTetramino(_x, _y)
                 }
                 tetramino.figure[3] = {
                     x : _x + 1,
-                    y : _y + 1,
+                    y : _y - 1,
                 }
             }
             break;
@@ -455,7 +455,7 @@ function placeTetramino(_x, _y)
 function spawnTetramino()
 {
     //Место появления нновых тетрамин
-    let x = 5
+    let x = 4
     let y = 0
 
     //пускай сейчас мы просто случайно выбираем тип фигуры (от 1 до 7, так как 0 это пустой блок)
@@ -608,7 +608,7 @@ function spawnTetramino()
 
 }
 
-function clearField()
+function initializeField()
 {
     for (let i = 0; i < 10; i++)
     {
@@ -618,24 +618,41 @@ function clearField()
             field[i][j] = {
                 x : i * 40,
                 y : j * 40,
-                type : TileType.empty
+                type : TileType.empty,
+                isFallingBlock : false,
             }
         }
     }
 }
 
-/*
-function awake()
+function updateField()
 {
-    context.drawImage(background, 0, 0);
+    for (let i = 0; i < 10; i++)
+    {
+        for (let j = 0; j < 20; j++)
+        {
+            if (field[i][j].isFallingBlock == true)
+            {
+                field[i][j] = {
+                    x : i * 40,
+                    y : j * 40,
+                    type : TileType.empty,
+                    isFallingBlock: false,
+                }
+            }
+        }
+    }
 }
-*/
 
 function showTetramino()
 {
     for (let i = 0; i < 4; i++)
     {
-        field[tetramino.figure[i].x][tetramino.figure[i].y].type = tetramino.figureType;
+        if (tetramino.figure[i].x >= 0 && tetramino.figure[i].y >= 0)
+        {
+            field[tetramino.figure[i].x][tetramino.figure[i].y].type = tetramino.figureType;
+            field[tetramino.figure[i].x][tetramino.figure[i].y].isFallingBlock = true;
+        }
     }
 }
 
@@ -648,11 +665,48 @@ function gameComputings()
     }
 }
 
+function isCollision(_direction)
+{
+    if (_direction == -1) // left
+    {
+        for (let i = 0; i < 4; i++)
+        {
+            if (tetramino.figure[i].y >= 0 && (tetramino.figure[i].x <= 0 || (field[tetramino.figure[i].x - 1][tetramino.figure[i].y].type != TileType.empty && field[tetramino.figure[i].x - 1][tetramino.figure[i].y].isFallingBlock == false)))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+    else if (_direction == 1) // right
+    {
+        for (let i = 0; i < 4; i++)
+        {
+            if (tetramino.figure[i].y >= 0 && (tetramino.figure[i].x >= 9 || (field[tetramino.figure[i].x + 1][tetramino.figure[i].y].type != TileType.empty && field[tetramino.figure[i].x + 1][tetramino.figure[i].y].isFallingBlock == false)))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+    else // down
+    {
+        for (let i = 0; i < 4; i++)
+        {
+            if (tetramino.figure[i].y >= 19 || (field[tetramino.figure[i].x][tetramino.figure[i].y + 1].type != TileType.empty && field[tetramino.figure[i].x][tetramino.figure[i].y + 1].isFallingBlock == false))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+}
+
 //Рисует кадр
 function drawFrame()
 {
     //Очищаем поле
-    clearField();
+    updateField();
 
     //Выводим фигуру на экран
     showTetramino();
@@ -709,12 +763,156 @@ function drawFrame()
 
 function update()
 {
-    spawnTetramino();
-    drawFrame();
+    //drawFrame();
     //Перемещение фигуры, просчет столкновений
-    gameComputings();
+    //gameComputings();
 
-    setTimeout(update, 1000);
+    //setTimeout(update, 1000);
+}
+
+function start()
+{
+    initializeField();
+    spawnTetramino();
+
+    gravity();
+}
+
+function checkLayer(_y)
+{
+    let _isFilled = false;
+
+    for (let i = 0; i < 20; i++)
+    {
+        if (field[i][_y].type == empty)
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
+function deleteLayer(_y)
+{
+    //Очищаем слой
+    for (let i = 0; i < 20; i++)
+    {
+        field[i][_y].type = empty;
+        field[i][_y].isFallingBlock = false;
+    }
+
+    //если есть элементы выше, то опускаем их вниз
+    for (let j = _y - 1; j  > 0; j--)
+    {
+        for (let i = 0; i < 10; i++)
+        {
+            field[i][j + 1].type = field[i][j].type;
+            field[i][j].type = empty;
+        }
+    }
+}
+
+function tetraminoLanded()
+{
+    //проверяем на то, заполнен ли слой из блоков, чтобы если что его убрать и добавить очки
+    for (let i = 0; i < 4; i++)
+    {
+        field[tetramino.figure[i].x][tetramino.figure[i].y].isFallingBlock = false;
+        /* BUG
+        if (checkLayer(tetramino.figure[i].y))
+        {
+            deleteLayer(tetramino.figure[i].y)
+        }
+        */
+    }
+    spawnTetramino();
+}
+
+function gravity()
+{
+    if (isCollision(0))
+    {
+        for (let i = 0; i < 4; i++)
+        {
+            tetramino.figure[i].y++;
+        }
+    }
+    else
+    {
+        tetraminoLanded();
+    }
+
+    drawFrame();
+
+    setTimeout(gravity, 1000);
+}
+
+function rotateFallingBlock()
+{
+    //LEGACY
+    tetramino.rotation++;
+    placeTetramino(tetramino.figure[0].x, tetramino.figure[0].y);
+    
+    drawFrame();
+
+    //без drawFrame(); новое
+    /*
+    let _isRotationAvailable = true;
+
+    for (let i = 0; i < 4; i++)
+    {
+        if (tetramino.figure[i].x < 0 || tetramino.figure[i].y < 0 || field[tetramino.figure[i].x][tetramino.figure[i].y].type != empty)
+        {
+            _isRotationAvailable = false;
+        }
+        break;
+    }
+
+    if (_isRotationAvailable)
+    {
+        drawFrame();
+    }
+    else
+    {
+        tetramino.rotation--;
+        placeTetramino(tetramino.figure[0].x, tetramino.figure[0].y);
+
+        drawFrame();
+    }
+    */
+}
+
+function moveFallingBlock(_direction)
+{
+    if (isCollision(_direction))
+    {
+        switch (_direction) {
+            case -1:
+                for (let i = 0; i < 4; i++)
+                {
+                    tetramino.figure[i].x--;
+                }
+                break;
+            case 1:
+                for (let i = 0; i < 4; i++)
+                {
+                    tetramino.figure[i].x++;
+                }
+                break;
+            default:
+                for (let i = 0; i < 4; i++)
+                {
+                    tetramino.figure[i].y++;
+                }
+                break;
+        }
+
+        drawFrame();
+    }
+    //else if (_direction == 0)
+    //{
+    //    tetraminoLanded();
+    //}
 }
 
 /**
@@ -727,39 +925,34 @@ function getKey(e){
             rotateFallingBlock();
             break;
         case 'KeyA':
-            moveFallingBlock(-1, 0);
+            moveFallingBlock(-1);
             break;
         case 'KeyS':
-            moveFallingBlock(0, 1);
+            moveFallingBlock(0);
             break;
         case 'KeyD':
-            moveFallingBlock(1, 0);
+            moveFallingBlock(1);
+            break;
+        case 'ArrowUp':
+            rotateFallingBlock();
+            break;
+        case 'ArrowLeft':
+            moveFallingBlock(-1);
+            break;
+        case 'ArrowDown':
+            moveFallingBlock(0);
+            break;
+        case 'ArrowRight':
+            moveFallingBlock(1);
             break;
         default:
             break;
-    }
-    if (e.code == 'KeyA')
-    {
-        moveFallingBlock(-1);
-    }
-    else if (e.code == 'KeyA')
-    {
-        moveFallingBlock(-1);
-    }
-    else if (e.code == 'KeyA')
-    {
-        moveFallingBlock(-1);
-    }
-    else if (e.code == 'KeyD')
-    {
-        moveFallingBlock(1);
     }
 }
 
 background.src = "Sprites/background.png";
 
-background.addEventListener("load", spawnTetramino);
-background.addEventListener("load", update);
+background.addEventListener("load", start);
 //background.addEventListener("load", awake);
 document.addEventListener("keydown", getKey);
 
