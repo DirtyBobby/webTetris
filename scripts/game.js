@@ -408,57 +408,11 @@ function placeTetramino(_x, _y)
     }
 }
 
-//rotation
-// blockL
-// # - [3]
-// # - [0]
-// # - [1]
-// # - [2]
-//
-// ####
-// [3][0][1][2]
-
-// blockJ
-//
-//  #    [1]   [3]         [2][3]                 
-//  #    [0]   [2][0][1]   [0]       [1][0][2]             
-// ## [3][2]               [1]             [3]
-
-// blockL
-//               #                  ###
-// #   [1]           [3]        [3][2]    #    
-// #   [0]     [1][0][2]      #    [0]    [2][0][1]    
-// ##  [2][3]                 #    [1]    [3]   
-
-// blockO
-//
-// [0][1]
-// [2][3]
-//
-
-//blockS
-//              [1]
-//    [0][1]    [0][2]
-// [3][2]          [3]
-//                 
-
-//block T
-//
-//     [3]        [1]                     [2]      
-//  [1][0][2]     [0][3]   [2][0][1]   [3][0]      
-//                [2]         [3]         [1]     
-
-//block Z
-//                  [3]
-// [1][0]        [0][2]
-//    [2][3]     [1]
-//             
-
 function spawnTetramino()
 {
-    //Место появления нновых тетрамин
+    //Место появления новых тетрамин
     let x = 4
-    let y = 0
+    let y = -1
 
     //пускай сейчас мы просто случайно выбираем тип фигуры (от 1 до 7, так как 0 это пустой блок)
     let _figureType = RandomInt(7) + 1
@@ -471,143 +425,6 @@ function spawnTetramino()
     }
 
     placeTetramino(x, y)
-/*
-//Фигура состоит из: [0] элемент - ось вращения фигуры, [1] элемент - верхняя часть фигуры [2] элемент - левая часть фигуры [3] элемент - правая часть фигуры. Нижняя часть проверяется по всем частям
-
-    //собираем фигуру определенного типа из блоков
-    switch (tetramino.figureType) {
-        case TileType.empty:
-            alert("Error, empty block!")
-            break;
-        case TileType.blockI:
-            tetramino.figure[0] = {
-                x : 4,
-                y : 0,
-            }
-            tetramino.figure[1] = {
-                x : 5,
-                y : 0,
-            }
-            tetramino.figure[2] = {
-                x : 6,
-                y : 0,
-            }
-            tetramino.figure[3] = {
-                x : 7,
-                y : 0,
-            }
-            break;
-        case TileType.blockJ:
-            tetramino.figure[0] = {
-                x : 4,
-                y : 0,
-            }
-            tetramino.figure[1] = {
-                x : 4,
-                y : 1,
-            }
-            tetramino.figure[2] = {
-                x : 5,
-                y : 1,
-            }
-            tetramino.figure[3] = {
-                x : 6,
-                y : 1,
-            }
-            break;
-        case TileType.blockL:
-            tetramino.figure[0] = {
-                x : 4,
-                y : 1,
-            }
-            tetramino.figure[1] = {
-                x : 5,
-                y : 1,
-            }
-            tetramino.figure[2] = {
-                x : 6,
-                y : 1,
-            }
-            tetramino.figure[3] = {
-                x : 6,
-                y : 0,
-            }
-            break;
-        case TileType.blockO:
-            tetramino.figure[0] = {
-                x : 5,
-                y : 0,
-            }
-            tetramino.figure[1] = {
-                x : 5,
-                y : 1,
-            }
-            tetramino.figure[2] = {
-                x : 6,
-                y : 1,
-            }
-            tetramino.figure[3] = {
-                x : 6,
-                y : 0,
-            }
-            break;
-        case TileType.blockS:
-            tetramino.figure[0] = {
-                x : 4,
-                y : 1,
-            }
-            tetramino.figure[1] = {
-                x : 5,
-                y : 1,
-            }
-            tetramino.figure[2] = {
-                x : 5,
-                y : 0,
-            }
-            tetramino.figure[3] = {
-                x : 6,
-                y : 0,
-            }
-            break;
-        case TileType.blockT:
-            tetramino.figure[0] = {
-                x : 4,
-                y : 1,
-            }
-            tetramino.figure[1] = {
-                x : 5,
-                y : 1,
-            }
-            tetramino.figure[2] = {
-                x : 5,
-                y : 0,
-            }
-            tetramino.figure[3] = {
-                x : 6,
-                y : 1,
-            }
-            break;
-        default:
-            tetramino.figure[0] = {
-                x : 4,
-                y : 0,
-            }
-            tetramino.figure[1] = {
-                x : 5,
-                y : 0,
-            }
-            tetramino.figure[2] = {
-                x : 5,
-                y : 1,
-            }
-            tetramino.figure[3] = {
-                x : 6,
-                y : 1,
-            }
-            break;
-    }
-    */
-
 }
 
 function initializeField()
@@ -704,10 +521,11 @@ function isCollision(_direction)
     }
 }
 
+context.font = "48px sans-serif";
+
 function showScore()
 {
     context.fillStyle = "white";
-    context.font = "48px sans-serif";
     context.fillText("Score: " + gameScore, 450, 100, 300);
 }
 
@@ -736,7 +554,6 @@ function drawFrame()
             switch (cell.type) {
                 case TileType.empty:
                     //context.strokeRect(field[i][j].x, field[i][j].y, 40, 40);
-                    
                     break;
                 case TileType.blockI:
                     context.fillStyle = "cyan";
@@ -772,15 +589,6 @@ function drawFrame()
     }
 
     showScore();
-}
-
-function update()
-{
-    //drawFrame();
-    //Перемещение фигуры, просчет столкновений
-    //gameComputings();
-
-    //setTimeout(update, 1000);
 }
 
 function start()
