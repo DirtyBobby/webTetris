@@ -490,7 +490,7 @@ function isCollision(_direction)
     {
         for (let i = 0; i < 4; i++)
         {
-            if (tetramino.figure[i].y >= 0 && (tetramino.figure[i].x <= 0 || (field[tetramino.figure[i].x - 1][tetramino.figure[i].y].type != TileType.empty && field[tetramino.figure[i].x - 1][tetramino.figure[i].y].isFallingBlock == false)))
+            if (tetramino.figure[i].x <= 0 || (tetramino.figure[i].y >= 0 && (field[tetramino.figure[i].x - 1][tetramino.figure[i].y].type != TileType.empty && field[tetramino.figure[i].x - 1][tetramino.figure[i].y].isFallingBlock == false)))
             {
                 return false;
             }
@@ -501,7 +501,7 @@ function isCollision(_direction)
     {
         for (let i = 0; i < 4; i++)
         {
-            if (tetramino.figure[i].y >= 0 && (tetramino.figure[i].x >= 9 || (field[tetramino.figure[i].x + 1][tetramino.figure[i].y].type != TileType.empty && field[tetramino.figure[i].x + 1][tetramino.figure[i].y].isFallingBlock == false)))
+            if ( tetramino.figure[i].x >= 9 || (tetramino.figure[i].y >= 0 && (field[tetramino.figure[i].x + 1][tetramino.figure[i].y].type != TileType.empty && field[tetramino.figure[i].x + 1][tetramino.figure[i].y].isFallingBlock == false)))
             {
                 return false;
             }
@@ -512,7 +512,7 @@ function isCollision(_direction)
     {
         for (let i = 0; i < 4; i++)
         {
-            if (tetramino.figure[i].y >= 19 || (field[tetramino.figure[i].x][tetramino.figure[i].y + 1].type != TileType.empty && field[tetramino.figure[i].x][tetramino.figure[i].y + 1].isFallingBlock == false))
+            if (tetramino.figure[i].y >= 0 && (tetramino.figure[i].y >= 19 || (field[tetramino.figure[i].x][tetramino.figure[i].y + 1].type != TileType.empty && field[tetramino.figure[i].x][tetramino.figure[i].y + 1].isFallingBlock == false)))
             {
                 return false;
             }
@@ -526,7 +526,7 @@ context.font = "48px sans-serif";
 function showScore()
 {
     context.fillStyle = "white";
-    context.fillText("Score: " + gameScore, 450, 100, 300);
+    context.fillText("Score: " + gameScore, 410, 50, 300);
 }
 
 //Рисует кадр
@@ -539,7 +539,8 @@ function drawFrame()
     showTetramino();
 
     //Назначаем цвет обводки для (strokeRect)
-    context.strokeStyle = "white";
+    //context.strokeStyle = "white";
+    context.strokeStyle = "rgba(255,255,255,0.4)";
 
     //Назначаем цвет фигур (fillReact)
     context.fillStyle = "#383838";
@@ -556,31 +557,31 @@ function drawFrame()
                     //context.strokeRect(field[i][j].x, field[i][j].y, 40, 40);
                     break;
                 case TileType.blockI:
-                    context.fillStyle = "cyan";
+                    context.fillStyle = "#2CB8EB"; //"cyan";
                     context.fillRect(field[i][j].x, field[i][j].y, 40, 40);
                     break;
                 case TileType.blockJ:
-                    context.fillStyle = "blue";
+                    context.fillStyle = "#6531D6"; //"blue";
                     context.fillRect(field[i][j].x, field[i][j].y, 40, 40);
                     break;
                 case TileType.blockL:
-                    context.fillStyle = "orange";
+                    context.fillStyle = "#F5662A" //"orange";
                     context.fillRect(field[i][j].x, field[i][j].y, 40, 40);
                     break;
                 case TileType.blockO:
-                    context.fillStyle = "yellow";
+                    context.fillStyle = "#FFCC00"; //"yellow";
                     context.fillRect(field[i][j].x, field[i][j].y, 40, 40);
                     break;
                 case TileType.blockS:
-                    context.fillStyle = "green";
+                    context.fillStyle = "#3DD44E"; //"green";
                     context.fillRect(field[i][j].x, field[i][j].y, 40, 40);
                     break;
                 case TileType.blockT:
-                    context.fillStyle = "purple";
+                    context.fillStyle = "#9B18D6"; //"rgb(204,0,255)"; //purple
                     context.fillRect(field[i][j].x, field[i][j].y, 40, 40);
                     break;
                 default:
-                    context.fillStyle = "red";
+                    context.fillStyle = "#F53532"; //red //F53532 F5433C
                     context.fillRect(field[i][j].x, field[i][j].y, 40, 40);
                     break;
             }
@@ -623,9 +624,11 @@ function deleteLayer(_y)
         field[i][_y].type = TileType.empty;
         field[i][_y].isFallingBlock = false;
     }
+}
 
-    //если есть элементы выше, то опускаем их вниз
-    for (let j = _y - 1; j  > 0; j--)
+function shiftLayer(_y)
+{
+    for (let j = _y - 1; j > 0; j--)
     {
         for (let i = 0; i < 10; i++)
         {
@@ -635,12 +638,30 @@ function deleteLayer(_y)
     }
 }
 
+function deleteLayers(_yLayers, _layersInARow)
+{
+
+    for (let i = 0; i < _layersInARow; i++)
+    {
+        deleteLayer(_yLayers[i]);
+    }
+    
+    let shift = 0;
+
+    //Опускаем слои, расположенные выше тех, которые были удалены
+    for (let i = 0; i < _layersInARow; i++)
+    {
+        shiftLayer(_yLayers[i] + shift);
+        shift++;
+    }
+}
+
 function tetraminoLanded()
 {
     //делаем блоки статичными и проверяем на конец игры
     for (let i = 0; i < 4; i++)
     {
-        if (tetramino.figure[i].y < 0)
+        if (tetramino.figure[i].y <= 0)
         {
             drawFrame();
             alert("Game Over");
@@ -650,19 +671,43 @@ function tetraminoLanded()
         field[tetramino.figure[i].x][tetramino.figure[i].y].isFallingBlock = false;
     }
     
-    let _layersDeletedInARow = 0;
+    //Сколько всего слоев должно исчезнуть после проверки
+    let _layersInARow = 0;
+    //Какие именно это слои
+    let _yLayers = [];
 
     //проверяем на то, заполнен ли слой из блоков, чтобы если что его убрать и добавить очки
     for (let i = 0; i < 4; i++)
     {
         if (checkLayer(tetramino.figure[i].y))
         {
-            deleteLayer(tetramino.figure[i].y)
-            _layersDeletedInARow++;
+            let isSameLayers = false;
+
+            //Проверяем на повторяемость
+            for (let j = 0; j < _layersInARow; j++)
+            {
+                if (_yLayers[j] == tetramino.figure[i].y)
+                {
+                    isSameLayers = true;
+                    break;
+                }
+            }
+
+            //Если слой "новый", то добавляем его в массив
+            if (isSameLayers == false)
+            {
+                _yLayers[_layersInARow] = tetramino.figure[i].y;
+                _layersInARow++;
+            }
         }
     }
 
-    switch (_layersDeletedInARow) {
+    if (_layersInARow != 0)
+    {
+        deleteLayers(_yLayers, _layersInARow);
+    }
+
+    switch (_layersInARow) {
         case 1:
             gameScore += 100;
             break;
