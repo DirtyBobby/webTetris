@@ -882,12 +882,12 @@ function rotateFallingBlock()
 
     for (let i = 0; i < 4; i++)
     {
-        if (tetramino.figure[i].x < 0 || tetramino.figure[i].x > 9 || tetramino.figure[i].y < 0 || tetramino.figure[i].y > 19)
+        if (tetramino.figure[i].x < 0 || tetramino.figure[i].x > 9)
         {
             _isRotationAvailable = false;
             break;
         }
-        else if (field[tetramino.figure[i].x][tetramino.figure[i].y].type != TileType.empty && field[tetramino.figure[i].x][tetramino.figure[i].y].isFallingBlock == false)
+        else if ((tetramino.figure[i].y >= 0 && tetramino.figure[i].y < 20) && field[tetramino.figure[i].x][tetramino.figure[i].y].type != TileType.empty && field[tetramino.figure[i].x][tetramino.figure[i].y].isFallingBlock == false)
         {
             _isRotationAvailable = false;
             break;
