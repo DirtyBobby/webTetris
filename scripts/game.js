@@ -555,8 +555,8 @@ context.font = "48px sans-serif";
 
 function showMenu()
 {
-    context.fillStyle = "white";
-    context.fillText("Score: " + gameScore, 440, 50, 300);
+    context.fillStyle = "#f2f2f2";
+    context.fillText("Score: " + gameScore, 420, 50, 300);
     showMenuTetramino();
 }
 
@@ -787,10 +787,11 @@ function tetraminoLanded()
     {
         if (tetramino.figure[i].y <= 0)
         {
-            drawFrame();
+            sendScore(gameScore);
+            //drawFrame();
             gameLoop.stopGame();
-            alert("Game Over");
-            start();
+            alert("Game Over4");
+            //start();
             break;
         }
 
@@ -938,6 +939,33 @@ function moveFallingBlock(_direction)
     {
         tetraminoLanded();
     }
+}
+
+function sendScore(score_num)
+{
+        
+    //$(document).ready(function(){
+       //         $.ajax({
+       //             type: "POST",
+       //             url: "game.php", 
+       //             data: { score: score_num },
+       //                 dataType: 'json',
+       //                 cache: false,
+       //                 success: function( score ){
+       //                 alert( score ); }
+       //         });
+       // });
+        
+       document.cookie="score="+score_num;
+       window.location.href="game.php";
+       
+       /*
+       $.ajax({
+            url: "game.php",
+            type: "POST",
+            data: "score"
+          })
+        */
 }
 
 /**

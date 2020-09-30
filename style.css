@@ -1,0 +1,167 @@
+.space {
+    padding: 0;
+    margin: 0;
+    background-color: #383838;
+    text-align: left;
+    color: #f1f1f1;
+    font: small-caps bold 24px/1 Geneva, Arial, Helvetica, sans-serif;
+}
+
+.usercontent {
+    width: 100%;
+    height: auto;
+    padding: 0;
+    padding-top: 25px;
+    padding-bottom: 50px;
+    margin: 0;
+    background-color: #383838;
+    text-align: left;
+    color: #f1f1f1;
+    font: small-caps bold 24px/1 Geneva, Arial, Helvetica, sans-serif;
+}
+
+.profile {
+    padding: 0;
+    margin-bottom: 20px;
+    padding-left: 50px;
+    font: small-caps bold 18px/1 Geneva, Arial, Helvetica, sans-serif;
+    background-position: left;
+}
+
+.authform {
+    border: 2px solid #f1f1f1;
+    width: 680px;
+    height: 400px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    background-position: center;
+}
+
+.board {
+    margin-left: 50px;
+}
+
+.success {
+    margin-top: 20px;
+    color:#3DD44E; 
+}
+
+.failed {
+    margin-top: 20px;
+    color:#F5424F; 
+}
+
+.buttonspanel {
+    text-align: center;
+    margin-top: auto;
+    width: 100%;
+    background-color: #2e2e2e;
+}
+
+input, select, textarea{
+    width: 500px;
+    height: 50px;
+    margin-top: 15px;
+    border: 0;
+    border-bottom: 2px solid #f1f1f1;
+    background-color: rgba(0, 0, 0, 0);
+    color: #f1f1f1;
+    font: bold 18px/1 Geneva, Arial, Helvetica, sans-serif;
+
+    transition: 0.3s ease;
+}
+
+input::placeholder {
+    color: #f1f1f1;
+}
+
+.menubutton {
+    width: 250px;
+    height: 50px;
+    margin-top: 30px;
+    border: 2px solid #f1f1f1;
+    padding: 9px;
+    background-color: #383838;
+    border-radius: 0px;
+    color: #f1f1f1;
+    font: small-caps bold 18px/1 Geneva, Arial, Helvetica, sans-serif;
+
+    transition: 0.3s ease;
+    text-decoration: none;
+}
+
+.menubutton:hover {
+    background-color: #ffffff;
+    color: #383838;
+}
+
+.gameshistorybutton {
+    width: 250px;
+    height: 50px;
+    margin: 10px;
+    border: 2px solid #2CB8EB;
+    padding: 9px;
+    background-color: #38383800;
+    border-radius: 0px;
+    color: #2CB8EB;
+    font: small-caps bold 18px/1 Geneva, Arial, Helvetica, sans-serif;
+
+    transition: 0.3s ease;
+    text-decoration: none;
+}
+
+.gameshistorybutton:hover {
+    background-color: #2CB8EB;
+    color: #383838;
+}
+
+.logoutbutton {
+    width: 250px;
+    height: 50px;
+    margin: 10px;
+    border: 2px solid #F5424F;
+    padding: 10px;
+    background-color: #38383800;
+    border-radius: 0px;
+    color: #F5424F;
+    text-align: center;
+    text-underline-offset: 0;
+    font: small-caps bold 18px/1 Geneva, Arial, Helvetica, sans-serif;
+
+    transition: 0.3s ease;
+    text-decoration: none;
+}
+
+.logoutbutton:hover {
+    background-color: #F5424F;
+    color: #383838;
+}
+
+.playbutton {
+    width: 250px;
+    height: 50px;
+    margin: 10px;
+    border: 2px solid #3DD44E;
+    padding: 9px;
+    background-color: #38383800;
+    border-radius: 0px;
+    color: #3DD44E;
+    text-align: center;
+    font: small-caps bold 18px/1 Geneva, Arial, Helvetica, sans-serif;
+
+    transition: 0.3s ease;
+    text-decoration: none;
+}
+
+.playbutton:hover {
+    background-color: #3DD44E;
+    color: #383838;
+}
+
+.gamecanvas {
+    background-color: #383838;
+    width: 100%;
+    background-position: center;
+    text-align: center;
+}
